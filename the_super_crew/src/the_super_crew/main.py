@@ -39,9 +39,22 @@ class DataAnalysisFlow(Flow[DataAnalysisState]):
         original_cwd = Path.cwd()
         try:
             os.chdir(workspace_root)
-            result = subprocess.run([sys.executable, str(eda_path)], capture_output=False, text=True, check=False)
+            result = subprocess.run(
+                [sys.executable, str(eda_path)],
+                capture_output=True,
+                text=True,
+                check=False
+            )
             if result.returncode != 0:
-                raise Exception(f"EDA.py failed with return code {result.returncode}")
+                print("❌ Error output from EDA.py:")
+                print(result.stderr)
+                if result.stdout:
+                    print("Standard output:")
+                    print(result.stdout)
+                raise Exception(f"EDA.py failed with return code {result.returncode}\nError: {result.stderr}")
+            # Print stdout if there's output
+            if result.stdout:
+                print(result.stdout)
             print("✅ EDA completed successfully")
             self.state.eda_complete = True
         finally:
@@ -62,9 +75,22 @@ class DataAnalysisFlow(Flow[DataAnalysisState]):
         original_cwd = Path.cwd()
         try:
             os.chdir(workspace_root)
-            result = subprocess.run([sys.executable, str(stats_path)], capture_output=False, text=True, check=False)
+            result = subprocess.run(
+                [sys.executable, str(stats_path)],
+                capture_output=True,
+                text=True,
+                check=False
+            )
             if result.returncode != 0:
-                raise Exception(f"statistical_analisys.py failed with return code {result.returncode}")
+                print("❌ Error output from statistical_analisys.py:")
+                print(result.stderr)
+                if result.stdout:
+                    print("Standard output:")
+                    print(result.stdout)
+                raise Exception(f"statistical_analisys.py failed with return code {result.returncode}\nError: {result.stderr}")
+            # Print stdout if there's output
+            if result.stdout:
+                print(result.stdout)
             print("✅ Statistical analysis completed successfully")
             self.state.statistical_analysis_complete = True
         finally:

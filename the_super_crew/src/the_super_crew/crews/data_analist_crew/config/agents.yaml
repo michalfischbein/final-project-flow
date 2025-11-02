@@ -112,8 +112,3 @@ action_advisor:
   memory: false
   allow_delegation: false
   max_iter: 20
-  
-  tools: 
-    -  SerperDevTool
-    
-

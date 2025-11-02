@@ -2,7 +2,24 @@ import pandas as pd
 import numpy as np
 import sys
 from datetime import datetime
-from scipy import stats
+
+# Try to import scipy.stats, fallback to numpy if not available
+try:
+    from scipy import stats
+    HAS_SCIPY = True
+except ImportError:
+    HAS_SCIPY = False
+    # Fallback zscore function using numpy
+    def zscore(a, axis=0, ddof=0):
+        """Calculate z-scores using numpy (fallback when scipy is not available)"""
+        a = np.asanyarray(a)
+        mns = np.mean(a, axis=axis, keepdims=True)
+        sstd = np.std(a, axis=axis, ddof=ddof, keepdims=True)
+        if axis is None:
+            mns = np.mean(a)
+            sstd = np.std(a, ddof=ddof)
+        return (a - mns) / sstd
+    stats = type('stats', (), {'zscore': zscore})()
 
 # =====================================================
 # הגדרת Logger - כותב גם למסך וגם לקובץ MD

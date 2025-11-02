@@ -1,8 +1,12 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
+from crewai_tools import SerperDevTool
 
 from typing import List
+
+# Initialize the SerperDevTool
+serper_tool = SerperDevTool()
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -40,6 +44,7 @@ class DataAnalistCrew:
     def action_advisor(self) -> Agent:
         return Agent(
             config=self.agents_config["action_advisor"],  # type: ignore[index]
+            tools=[serper_tool],  # Add SerperDevTool to the agent
         )
 
     # To learn more about structured task outputs,

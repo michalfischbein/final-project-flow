@@ -1,7 +1,243 @@
-write_poem:
+
+# =============================================================================
+# TASK: ANALYZE DATA
+# =============================================================================
+
+analyze_data_task:
   description: >
-    Write a poem about how CrewAI is awesome.
-    Ensure the poem is engaging and adheres to the specified sentence count of {sentence_count}.
+    Read 'statistical_analysis_report.md' and explore 'data_cleaned.csv'.
+    
+    Your job:
+    1. Describe what you see in the data (facts + numbers only)
+    2. Identify patterns, trends, correlations, anomalies
+    3. List top/bottom performers across categories
+    4. Propose 10-15 research questions answerable with this data
+    
+    Rules:
+    - State WHAT you observe, never WHY
+    - Use exact numbers from the report
+    - Don't invent data - only use what's provided
+    - If unsure, verify with CSVSearchTool
+    - NO insights, interpretations, or recommendations
+    
   expected_output: >
-    A beautifully crafted poem about CrewAI, with exactly {sentence_count} sentences.
-  agent: poem_writer
+    Markdown report with:
+    1. Data overview (scope, timeframe, key metrics)
+    2. Patterns & findings (correlations, trends, performance)
+    3. Research questions (10-15, must be answerable with available data)
+    4. Data gaps (what's missing)
+    
+  agent: data_detective
+
+
+
+# =============================================================================
+# TASK: GENERATE INSIGHTS
+# =============================================================================
+
+generate_insights_task:
+  description: >
+    Read the 'data_analysis_findings.md' report from the Data Detective.
+    
+    Your job:
+    1. Take each major finding and explain WHY it matters
+    2. Connect patterns to reveal deeper insights
+    3. Identify cause-and-effect relationships
+    4. Explain business implications
+    5. Synthesize 5-7 key insights from all the findings
+    
+    Focus areas:
+    - WHY are certain categories/regions underperforming?
+    - HOW do different patterns relate to each other?
+    - WHAT does this mean for business performance?
+    - WHERE are the root causes of issues?
+    
+    Rules:
+    - Explain and interpret - this is your strength
+    - Connect findings to show relationships
+    - Be specific - reference exact numbers from the report
+    - Verify with CSVSearchTool if you need to dig deeper
+    - NO recommendations or action items (that's Agent 3's job)
+    - Base insights ONLY on provided data, no external knowledge
+    
+  expected_output: >
+    Markdown report 'business_insights.md' with:
+    
+    ## 1. Executive Summary
+    Brief overview of main insights (3-5 sentences)
+    
+    ## 2. Deep Dive Insights
+    ### Insight 1: [Title]
+    - The pattern: [what was observed]
+    - Why it matters: [explanation]
+    - Connected findings: [relationships]
+    - Business implications: [what this means]
+    
+    [Repeat for 5-7 major insights]
+    
+    ## 3. Root Cause Analysis
+    For key issues identified:
+    - What's the underlying cause?
+    - How do multiple factors interact?
+    
+    ## 4. Opportunity Areas
+    Where the data suggests potential (without recommending specific actions)
+    
+    ## 5. Risk Areas
+    Where the data indicates concerns or challenges
+
+  agent: insight_generator 
+  
+  context:
+    - analyze_data_task
+ 
+
+
+# =============================================================================
+# TASK: PROVIDE ACTIONABLE RECOMMENDATIONS
+# =============================================================================
+
+provide_recommendations_task:
+  description: >
+    Read outputs from previous agents:
+    - 'data_analysis_findings.md' (Agent 1 - patterns and research questions)
+    - 'business_insights.md' (Agent 2 - insights and interpretations)
+    
+    YOUR MISSION:
+    
+    1. SELECT 2-3 CRITICAL RESEARCH QUESTIONS
+       From Agent 1's list, choose questions that:
+       - Have SIGNIFICANT business impact (revenue, profit, efficiency)
+       - Can drive meaningful change for the store
+       - Are answerable with available data
+       - Address root causes, not just symptoms
+       
+       Prioritize questions about:
+       - Major profit losses (e.g., Tables, underperforming regions)
+       - Revenue opportunities (high-margin products, growing segments)
+       - Operational inefficiencies (shipping, discounts)
+       - Strategic decisions (category focus, geographic expansion)
+    
+    2. ANSWER THE QUESTIONS
+       For each selected question:
+       - Use CSVSearchTool to analyze the data
+       - Provide specific findings with numbers
+       - Connect to insights from Agent 2
+       - Show data visualizations needs (what graphs would help)
+    
+    3. RESEARCH BENCHMARKS
+       Use WebSearchTool to find:
+       - Industry standards for retail metrics
+       - Best practices from successful retailers
+       - Competitive benchmarks (profit margins, discount strategies, etc.)
+       - Case studies or research on similar issues
+       
+       Focus on: e-commerce, retail, superstore, furniture/office supplies sectors
+    
+    4. PROVIDE ACTIONABLE RECOMMENDATIONS
+       Based on data analysis + benchmarks, suggest 5-10 specific actions:
+       - What to do (specific action)
+       - Why (expected impact with numbers if possible)
+       - How (implementation approach)
+       - Priority (High/Medium/Low based on impact and feasibility)
+       
+       Categories:
+       - Product/Category optimization
+       - Pricing and discount strategy
+       - Regional/geographic focus
+       - Operational improvements
+       - Customer segmentation
+    
+    5. PREPARE OUTPUT FOR VISUALIZATION TEAM
+       Identify 3-5 key issues that NEED visualization:
+       - What needs to be visualized
+       - Why visualization will help
+       - What type of chart/analysis would be most effective
+       - What insights we're trying to communicate
+    
+    CRITICAL RULES:
+    - Choose questions with MAXIMUM business impact
+    - Be specific in recommendations (not "improve X" but "do Y to improve X")
+    - Back everything with data and/or benchmarks
+    - Focus on actionable items, not theoretical advice
+    - Prioritize by impact and feasibility
+  
+  expected_output: >
+    Markdown report 'action_recommendations.md' with:
+    
+    ## 1. Executive Summary
+    - Questions selected and why
+    - Key findings summary
+    - Top 3 recommendations (one-sentence each)
+    
+    ## 2. Research Questions Analysis
+    
+    ### Question 1: [Title]
+    **Why this question matters:**
+    - Business impact: [revenue/profit/efficiency impact]
+    - Strategic importance: [why critical]
+    
+    **Data Analysis:**
+    - Findings from the dataset (with specific numbers)
+    - Patterns discovered
+    - Root causes identified
+    
+    **Benchmark Research:**
+    - Industry standards
+    - Best practices
+    - Competitive comparison
+    
+    [Repeat for 2-3 questions total]
+    
+    ## 3. Actionable Recommendations
+    
+    ### High Priority
+    #### Recommendation 1: [Specific Action]
+    - **What:** [Detailed description]
+    - **Why:** [Expected impact - be specific with numbers]
+    - **How:** [Implementation steps]
+    - **Timeline:** [Suggested timeframe]
+    - **Resources needed:** [What's required]
+    
+    [Continue with 5-10 total recommendations across High/Medium/Low priority]
+    
+    ## 4. Implementation Roadmap
+    - Quick wins (0-3 months)
+    - Medium-term initiatives (3-6 months)
+    - Long-term strategies (6-12 months)
+    
+    ---
+    
+    ## 5. OUTPUT FOR VISUALIZATION TEAM
+    
+    ### Key Insights to Communicate
+    1. [Insight from Agent 2]
+    2. [Insight from Agent 2]
+    3. [Insight from Agent 2]
+    
+    ### Issues Requiring Visualization
+    
+    #### Issue 1: [Title]
+    **Problem:** [Description of the issue]
+    **Why visualization needed:** [What we need to show/prove]
+    **Suggested visualizations:**
+    - Chart type 1: [e.g., Bar chart comparing categories]
+    - Chart type 2: [e.g., Time series showing trend]
+    **Data required:** [Which variables to use]
+    **Key message:** [What should the audience understand]
+    
+    #### Issue 2: [Title]
+    [Same structure]
+    
+    #### Issue 3: [Title]
+    [Same structure]
+    
+    [Total: 3-5 issues for visualization]
+  
+  agent: action_advisor
+
+  context:
+    - analyze_data_task       
+    - generate_insights_task
+
+  

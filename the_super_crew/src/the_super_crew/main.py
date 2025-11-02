@@ -1,52 +1,101 @@
 #!/usr/bin/env python
-from random import randint
+
+import os
+import subprocess
+import sys
+from pathlib import Path
 
 from pydantic import BaseModel
 
 from crewai.flow import Flow, listen, start
 
-from the_super_crew.crews.data_analist_crew.data_analist_crew import DataAnalistCrew
+
+from crews.data_analist_crew.data_analist_crew import DataAnalistCrew #from the_super_crew.crews.data_analist_crew.data_analist_crew import DataAnalistCrew
 
 
-class PoemState(BaseModel):
-    sentence_count: int = 1
-    poem: str = ""
+class DataAnalysisState(BaseModel):
+    eda_complete: bool = False
+    statistical_analysis_complete: bool = False
+    analysis_complete: bool = False
+    findings: str = ""
 
 
-class PoemFlow(Flow[PoemState]):
+class DataAnalysisFlow(Flow[DataAnalysisState]):
 
     @start()
-    def generate_sentence_count(self):
-        print("Generating sentence count")
-        self.state.sentence_count = randint(1, 5)
+    def run_eda(self):
+        """Run EDA.py to clean and prepare the data"""
+        print("=" * 80)
+        print("🚀 Starting EDA (Exploratory Data Analysis)")
+        print("=" * 80)
+        
+        # Get the path to EDA.py and workspace root
+        # main.py is at: the_super_crew/src/the_super_crew/main.py
+        # So going up 3 levels gets us to workspace root
+        workspace_root = Path(__file__).parent.parent.parent.parent
+        eda_path = workspace_root / "the_super_crew" / "src" / "the_super_crew" / "crews" / "data_analist_crew" / "data_analist_codes" / "EDA.py"
+        
+        # Change to workspace root directory for scripts that read CSV files
+        original_cwd = Path.cwd()
+        try:
+            os.chdir(workspace_root)
+            result = subprocess.run([sys.executable, str(eda_path)], capture_output=False, text=True, check=False)
+            if result.returncode != 0:
+                raise Exception(f"EDA.py failed with return code {result.returncode}")
+            print("✅ EDA completed successfully")
+            self.state.eda_complete = True
+        finally:
+            os.chdir(original_cwd)
 
-    @listen(generate_sentence_count)
-    def generate_poem(self):
-        print("Generating poem")
+    @listen(run_eda)
+    def run_statistical_analysis(self):
+        """Run statistical_analisys.py to generate statistical report"""
+        print("=" * 80)
+        print("📊 Starting Statistical Analysis")
+        print("=" * 80)
+        
+        # Get the path to statistical_analisys.py and workspace root
+        workspace_root = Path(__file__).parent.parent.parent.parent
+        stats_path = workspace_root / "the_super_crew" / "src" / "the_super_crew" / "crews" / "data_analist_crew" / "data_analist_codes" / "statistical_analisys.py"
+        
+        # Change to workspace root directory for scripts that read CSV files
+        original_cwd = Path.cwd()
+        try:
+            os.chdir(workspace_root)
+            result = subprocess.run([sys.executable, str(stats_path)], capture_output=False, text=True, check=False)
+            if result.returncode != 0:
+                raise Exception(f"statistical_analisys.py failed with return code {result.returncode}")
+            print("✅ Statistical analysis completed successfully")
+            self.state.statistical_analysis_complete = True
+        finally:
+            os.chdir(original_cwd)
+
+    @listen(run_statistical_analysis)
+    def run_data_analysis(self):
+        """Run the CrewAI data analysis crew"""
+        print("=" * 80)
+        print("🤖 Starting CrewAI Data Analysis")
+        print("=" * 80)
+        
         result = (
             DataAnalistCrew()
             .crew()
-            .kickoff(inputs={"sentence_count": self.state.sentence_count})
+            .kickoff()
         )
 
-        print("Poem generated", result.raw)
-        self.state.poem = result.raw
-
-    @listen(generate_poem)
-    def save_poem(self):
-        print("Saving poem")
-        with open("poem.txt", "w") as f:
-            f.write(self.state.poem)
+        print("Data analysis complete", result.raw)
+        self.state.findings = result.raw
+        self.state.analysis_complete = True
 
 
 def kickoff():
-    poem_flow = PoemFlow()
-    poem_flow.kickoff()
+    data_analysis_flow = DataAnalysisFlow()
+    data_analysis_flow.kickoff()
 
 
 def plot():
-    poem_flow = PoemFlow()
-    poem_flow.plot()
+    data_analysis_flow = DataAnalysisFlow()
+    data_analysis_flow.plot()
 
 
 if __name__ == "__main__":

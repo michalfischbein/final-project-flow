@@ -1,6 +1,7 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
+
 from typing import List
 
 # If you want to run a snippet of code before or after the crew starts,
@@ -24,18 +25,42 @@ class DataAnalistCrew:
     # If you would lik to add tools to your crew, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
-    def poem_writer(self) -> Agent:
+    def data_detective(self) -> Agent:
         return Agent(
-            config=self.agents_config["poem_writer"],  # type: ignore[index]
+            config=self.agents_config["data_detective"],  # type: ignore[index]
+        )
+
+    @agent
+    def insight_generator(self) -> Agent:
+        return Agent(
+            config=self.agents_config["insight_generator"],  # type: ignore[index]
+        )
+
+    @agent
+    def action_advisor(self) -> Agent:
+        return Agent(
+            config=self.agents_config["action_advisor"],  # type: ignore[index]
         )
 
     # To learn more about structured task outputs,
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
     @task
-    def write_poem(self) -> Task:
+    def analyze_data_task(self) -> Task:
         return Task(
-            config=self.tasks_config["write_poem"],  # type: ignore[index]
+            config=self.tasks_config["analyze_data_task"],  # type: ignore[index]
+        )
+
+    @task
+    def generate_insights_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["generate_insights_task"],  # type: ignore[index]
+        )
+
+    @task
+    def provide_recommendations_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["provide_recommendations_task"],  # type: ignore[index]
         )
 
     @crew

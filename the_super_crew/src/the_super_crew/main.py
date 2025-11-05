@@ -44,7 +44,7 @@ class DataAnalysisFlow(Flow[DataAnalysisState]):
         
         # Get the path to EDA.py and workspace root
         # main.py is at: the_super_crew/src/the_super_crew/main.py
-        # So going up 3 levels gets us to workspace root
+        # Going up 4 levels gets us to workspace root
         workspace_root = Path(__file__).parent.parent.parent.parent
         eda_path = workspace_root / "the_super_crew" / "src" / "the_super_crew" / "crews" / "data_analist_crew" / "data_analist_codes" / "EDA.py"
         
@@ -81,6 +81,8 @@ class DataAnalysisFlow(Flow[DataAnalysisState]):
         print("=" * 80)
         
         # Get the path to statistical_analisys.py and workspace root
+        # main.py is at: the_super_crew/src/the_super_crew/main.py
+        # Going up 4 levels gets us to workspace root
         workspace_root = Path(__file__).parent.parent.parent.parent
         stats_path = workspace_root / "the_super_crew" / "src" / "the_super_crew" / "crews" / "data_analist_crew" / "data_analist_codes" / "statistical_analisys.py"
         

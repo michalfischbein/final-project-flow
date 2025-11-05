@@ -1,7 +1,7 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
-from crewai_tools import FileReadTool, CSVSearchTool, CodeInterpreterTool
+from crewai_tools import FileReadTool, CSVSearchTool
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -19,7 +19,6 @@ csv_file_path = workspace_root / "data_cleaned.csv"
 # Initialize tools (lazy initialization for CSVSearchTool to avoid API calls at import time)
 file_read_tool = FileReadTool()
 # CSVSearchTool is initialized lazily in the agent method to avoid API calls during import
-code_interpreter_tool = CodeInterpreterTool()
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -59,8 +58,8 @@ class VisualizationCrew:
     @agent
     def viz_executor(self) -> Agent:
         return Agent(
-            config=self.agents_config["viz_executor"],  # type: ignore[index]
-            tools=[file_read_tool, code_interpreter_tool],  # Add tools for executor
+            config=self.agents_config["viz_executor"],
+            tools=[file_read_tool],  # FileReadTool to read visualization_code.md and create generate_charts.py script
         )
 
     # To learn more about structured task outputs,

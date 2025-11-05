@@ -1,7 +1,7 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
-from crewai_tools import SerperDevTool, FileReadTool, CSVSearchTool
+from crewai_tools import SerperDevTool, FileReadTool
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -14,12 +14,10 @@ load_dotenv()
 # data_analist_crew.py is at: the_super_crew/src/the_super_crew/crews/data_analist_crew/data_analist_crew.py
 # Going up 6 levels gets us to workspace root
 workspace_root = Path(__file__).parent.parent.parent.parent.parent.parent
-csv_file_path = workspace_root / "data_cleaned.csv"
 
-# Initialize tools (lazy initialization for CSVSearchTool to avoid API calls at import time)
+# Initialize tools
 serper_tool = SerperDevTool()
 file_read_tool = FileReadTool()
-# CSVSearchTool is initialized lazily in the agent method to avoid API calls during import
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -39,22 +37,20 @@ class DataAnalistCrew:
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
 
-    # If you would lik to add tools to your crew, you can learn more about it here:
+    # If you would like to add tools to your crew, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
     def data_detective(self) -> Agent:
-        # Initialize CSVSearchTool lazily to avoid API calls at import time
-        csv_search_tool = CSVSearchTool(csv=str(csv_file_path))
         return Agent(
             config=self.agents_config["data_detective"],  # type: ignore[index]
-            tools=[file_read_tool, csv_search_tool],  # Add FileReadTool and CSVSearchTool
+            tools=[file_read_tool],  # FileReadTool to read statistical_analysis_report.md
         )
 
     @agent
     def insight_generator(self) -> Agent:
         return Agent(
             config=self.agents_config["insight_generator"],  # type: ignore[index]
-            tools=[file_read_tool],  # Add FileReadTool to read data_analysis_findings.md
+            tools=[file_read_tool],  # FileReadTool to read data_analysis_findings.md
         )
 
     @agent

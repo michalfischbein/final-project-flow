@@ -1,0 +1,9 @@
+```
+## Recommended Visualizations
+
+### Issue 1: Optimize Discount Strategies - **Chart Type:** Scatter Plot - **Variables:** Discount Percentage vs Profit Margins - **Why this chart:** A scatter plot will effectively illustrate the relationship between discount percentages and profit margins, highlighting the negative correlation identified. - **Insight to communicate:** The chart aims to show how increasing discounts leads to decreasing profit margins, emphasizing the need for strategic discount management. - **Priority:** High
+
+### Issue 2: Boost Marketing Efforts during High-Growth Seasons - **Chart Type:** Line Chart - **Variables:** Sales Volume over Time with Annotations for Peak Periods - **Why this chart:** A line chart will allow visualization of sales trends over time, with the ability to annotate specific high-impact marketing efforts during peak times. - **Insight to communicate:** It will convey the correlation between increased marketing efforts in recognized high-growth periods and resulting sales increases, supporting the recommendation for resource allocation. - **Priority:** Medium
+
+### Issue 3: Analyze and Mimic Successful Outlier Events - **Chart Type:** Bar Chart - **Variables:** Sales Volume vs Time (with Outliers Highlighted) - **Why this chart:** A bar chart will clearly show the instances of outlier sales against typical sales volumes, making it easier to isolate and analyze these high-performing events. - **Insight to communicate:** This chart intends to highlight outlier sales events, making it easier to identify strategies for replicating success across different periods and products. - **Priority:** Medium
+```

@@ -5,6 +5,14 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Add src directory to path if running as script (not as module)
+# This allows imports to work both ways: `python main.py` and `python -m the_super_crew.main`
+# Check if we're running as a script (not imported as a module)
+if __name__ == "__main__" or not __package__:
+    src_dir = Path(__file__).parent.parent
+    if str(src_dir) not in sys.path:
+        sys.path.insert(0, str(src_dir))
+
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
@@ -13,9 +21,8 @@ from crewai.flow import Flow, listen, start
 # Load environment variables from .env file
 load_dotenv()
 
-
-from crews.data_analist_crew.data_analist_crew import DataAnalistCrew
-from crews.visualization_crew.visualizetion_crew import VisualizationCrew
+from the_super_crew.crews.data_analist_crew.data_analist_crew import DataAnalistCrew
+from the_super_crew.crews.visualization_crew.visualizetion_crew import VisualizationCrew
 
 
 class DataAnalysisState(BaseModel):

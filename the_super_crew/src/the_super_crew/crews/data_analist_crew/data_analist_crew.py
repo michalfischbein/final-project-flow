@@ -3,16 +3,23 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai_tools import SerperDevTool, FileReadTool, CSVSearchTool
 from dotenv import load_dotenv
+from pathlib import Path
 
 from typing import List
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Initialize tools
+# Get workspace root path (where data_cleaned.csv is located)
+# data_analist_crew.py is at: the_super_crew/src/the_super_crew/crews/data_analist_crew/data_analist_crew.py
+# Going up 6 levels gets us to workspace root
+workspace_root = Path(__file__).parent.parent.parent.parent.parent.parent
+csv_file_path = workspace_root / "data_cleaned.csv"
+
+# Initialize tools (lazy initialization for CSVSearchTool to avoid API calls at import time)
 serper_tool = SerperDevTool()
 file_read_tool = FileReadTool()
-csv_search_tool = CSVSearchTool()
+# CSVSearchTool is initialized lazily in the agent method to avoid API calls during import
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -36,6 +43,8 @@ class DataAnalistCrew:
     # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
     def data_detective(self) -> Agent:
+        # Initialize CSVSearchTool lazily to avoid API calls at import time
+        csv_search_tool = CSVSearchTool(csv=str(csv_file_path))
         return Agent(
             config=self.agents_config["data_detective"],  # type: ignore[index]
             tools=[file_read_tool, csv_search_tool],  # Add FileReadTool and CSVSearchTool
@@ -45,13 +54,14 @@ class DataAnalistCrew:
     def insight_generator(self) -> Agent:
         return Agent(
             config=self.agents_config["insight_generator"],  # type: ignore[index]
+            tools=[file_read_tool],  # Add FileReadTool to read data_analysis_findings.md
         )
 
     @agent
     def action_advisor(self) -> Agent:
         return Agent(
             config=self.agents_config["action_advisor"],  # type: ignore[index]
-            tools=[serper_tool],  # Add SerperDevTool to the agent
+            tools=[serper_tool, file_read_tool],  # Add SerperDevTool and FileReadTool
         )
 
     # To learn more about structured task outputs,

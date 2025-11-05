@@ -127,7 +127,7 @@ for col in date_cols:
     
     # פתרון לפורמטים מעורבבים: נסה כמה פורמטים
     # הקובץ מכיל שני פורמטים: dd.mm.yyyy ו-mm/dd/yyyy
-    df[col] = pd.to_datetime(df[col], format='mixed', dayfirst=True, errors='coerce')
+    df[col] = pd.to_datetime(df[col], format='mixed', dayfirst=False, errors='coerce')
     
     # בדיקת ערכים שלא הומרו
     null_dates = df[col].isnull().sum()

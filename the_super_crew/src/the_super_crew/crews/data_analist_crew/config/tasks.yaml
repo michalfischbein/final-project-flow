@@ -1,258 +1,192 @@
+# ============================================
+# TASKS: DATA STRATEGY & INSIGHTS TEAM
+# ============================================
 
-# =============================================================================
-# TASK: ANALYZE DATA
-# =============================================================================
-
+# ============================================
+# TASK 1: ANALYZE DATA
+# Agent: Data Detective
+# ============================================
 analyze_data_task:
-  description: >
-    You are tasked with analyzing two data sources:
-    1. 'statistical_analysis_report.md' – a pre-generated summary report containing statistical metrics, summaries, and high-level insights.
-    2. 'data_cleaned.csv' – the cleaned dataset containing raw observations across multiple variables.
+    description: >
+      You are tasked with performing a strictly factual and statistical analysis based on two sources:
+      1. 'statistical_analysis_report.md' – a report containing pre-computed metrics and summaries.
+      2. 'data_cleaned.csv' – a cleaned dataset with raw observations.
+
+      Your job:
+      - Describe only WHAT is observed – do not interpret, speculate, or explain WHY.
+      - Identify patterns, trends, outliers, and pre-calculated correlations.
+      - Support every observation with actual values (e.g., "Sales increased from 200 to 340").
+      - Include sample rows or values to illustrate patterns where possible.
+      - Mention correlations only if they exist in the report or dataset, and include:
+        * Method (Pearson, Spearman, etc.)
+        * Exact coefficient (e.g., "r = 0.72")
+        * Data source (CSV or report)
+      - Formulate 10–15 clear research questions that are directly answerable using the dataset.
+      - Present your report in structured Markdown with bullet points, headers, and clarity.
+
+      Think of your report as a deliverable to senior business leaders. Be precise, factual, and data-driven.
+
+    expected_output: >
+      Markdown report named 'data_analysis_findings.md', structured as follows:
+
+      ## 1. Data Overview
+      - Scope, timeframe, key variables
+      - Number of rows and columns
+      - Sample variable names and types
+
+      ## 2. Patterns & Findings
+      - Bullet points with numerical summaries
+      - Tables or samples to illustrate
+      - Correlations with values and methods
+
+      ## 3. Research Questions
+      - List of 10–15 descriptive, data-answerable questions
+
+      ## 4. Data Gaps
+      - Any clearly missing fields or information relevant to analysis
+
+    agent: data_detective
 
 
-    Your responsibilities:
-    1. Describe what is observed in the data – strictly factual and numeric.
-    2. Identify patterns, trends, anomalies, and correlations (only if they are explicitly calculated).
-    3. Highlight top and bottom performers using measurable values.
-    4. Formulate 10–15 research questions that are answerable using the dataset only.
-
-
-  expected_output: >
-    A structured Markdown report that includes:
-    - A clear overview of the dataset
-    - Factual patterns and statistical observations only
-    - 10–15 descriptive research questions, answerable using the data
-    - Any clearly identifiable gaps in the data
-
-    Rules:
-    - Always state WHAT is observed, never WHY.
-    - Support all findings with exact numbers or statistical measures.
-    - Any correlation mentioned must include the coefficient value and the calculation method (e.g., "Pearson r = 0.78").
-    - Do not speculate, interpret, or guess.
-    - Use CSVSearchTool when uncertain.
-    - Write your report in Markdown format, structured as follows:
-      1. Data Overview (scope, timeframe, key metrics)
-      2. Patterns & Findings (numeric, well-supported)
-      3. Research Questions (descriptive only, based on the data)
-      4. Data Gaps (only what is clearly missing)
-
-  expected_output: >
-    A structured Markdown report that includes:
-    - A clear overview of the dataset
-    - Factual patterns and statistical observations only
-    - 10–15 descriptive research questions, answerable using the data
-    - Any clearly identifiable gaps in the data
-
-  agent: data_detective
-
-
-# =============================================================================
-# TASK: GENERATE INSIGHTS
-# =============================================================================
-
+# ============================================
+# TASK 2: GENERATE INSIGHTS
+# Agent: Insight Generator
+# ============================================
 generate_insights_task:
-  description: >
-    Read the 'data_analysis_findings.md' report from the Data Detective.
-    
-    Your job:
-    1. Take each major finding and explain WHY it matters
-    2. Connect patterns to reveal deeper insights
-    3. Identify cause-and-effect relationships
-    4. Explain business implications
-    5. Synthesize 5-7 key insights from all the findings
-    
-    Focus areas:
-    - WHY are certain categories/regions underperforming?
-    - HOW do different patterns relate to each other?
-    - WHAT does this mean for business performance?
-    - WHERE are the root causes of issues?
-    
-    Rules:
-    - Explain and interpret - this is your strength
-    - Connect findings to show relationships
-    - Be specific - reference exact numbers from the report
-    - Verify with CSVSearchTool if you need to dig deeper
-    - NO recommendations or action items (that's Agent 3's job)
-    - Base insights ONLY on provided data, no external knowledge
-    
-  expected_output: >
-    Markdown report 'business_insights.md' with:
-    
-    ## 1. Executive Summary
-    Brief overview of main insights (3-5 sentences)
-    
-    ## 2. Deep Dive Insights
-    ### Insight 1: [Title]
-    - The pattern: [what was observed]
-    - Why it matters: [explanation]
-    - Connected findings: [relationships]
-    - Business implications: [what this means]
-    
-    [Repeat for 5-7 major insights]
-    
-    ## 3. Root Cause Analysis
-    For key issues identified:
-    - What's the underlying cause?
-    - How do multiple factors interact?
-    
-    ## 4. Opportunity Areas
-    Where the data suggests potential (without recommending specific actions)
-    
-    ## 5. Risk Areas
-    Where the data indicates concerns or challenges
+    description: >
+      Read the 'data_analysis_findings.md' report generated by the Data Detective.
 
-  agent: insight_generator 
-  
-  context:
-    - analyze_data_task
- 
+      Your task is to generate business insights that explain WHY patterns exist, HOW they relate to each other, and WHAT they mean for business performance.
+
+      For each insight:
+      - Begin with a concise title and summary sentence.
+      - Use 2–3 full sentences to explain the insight in business terms.
+      - Always reference specific metrics or values from the data.
+      - Explain the possible cause or correlation (if valid).
+      - Avoid assumptions – only use information supported by the data.
+      - Write in a clear, executive-level style.
+
+    expected_output: >
+      Markdown report 'business_insights.md' with:
+
+      ## 1. Executive Summary
+      - 3–5 sentence summary of the most important findings
+
+      ## 2. Deep Dive Insights
+      ### Insight 1: [Title]
+      - The pattern: [Brief factual summary]
+      - Why it matters: [Explanation of business relevance]
+      - Connected findings: [Related variables or categories]
+      - Business implications: [What this could indicate]
+
+      [Repeat for 5–7 insights]
+
+      ## 3. Root Cause Analysis
+      - Key issues and possible underlying drivers
+      - Explain how different metrics interact
+
+      ## 4. Opportunity Areas
+      - Data-supported opportunities (no recommendations)
+
+      ## 5. Risk Areas
+      - Metrics or patterns indicating concern or weakness
+
+    agent: insight_generator
+    context:
+      - analyze_data_task
 
 
-# =============================================================================
-# TASK: PROVIDE ACTIONABLE RECOMMENDATIONS
-# =============================================================================
-
+# ============================================
+# TASK 3: PROVIDE ACTIONABLE RECOMMENDATIONS
+# Agent: Action Advisor
+# ============================================
 provide_recommendations_task:
-  description: >
-    Read outputs from previous agents:
-    - 'data_analysis_findings.md' (Agent 1 - patterns and research questions)
-    - 'business_insights.md' (Agent 2 - insights and interpretations)
-    
-    YOUR MISSION:
-    
-    1. SELECT 2-3 CRITICAL RESEARCH QUESTIONS
-       From Agent 1's list, choose questions that:
-       - Have SIGNIFICANT business impact (revenue, profit, efficiency)
-       - Can drive meaningful change for the store
-       - Are answerable with available data
-       - Address root causes, not just symptoms
-       
-       Prioritize questions about:
-       - Major profit losses (e.g., Tables, underperforming regions)
-       - Revenue opportunities (high-margin products, growing segments)
-       - Operational inefficiencies (shipping, discounts)
-       - Strategic decisions (category focus, geographic expansion)
-    
-    2. ANSWER THE QUESTIONS
-       For each selected question:
-       - Use CSVSearchTool to analyze the data
-       - Provide specific findings with numbers
-       - Connect to insights from Agent 2
-       - Show data visualizations needs (what graphs would help)
-    
-    3. RESEARCH BENCHMARKS
-       Use WebSearchTool to find:
-       - Industry standards for retail metrics
-       - Best practices from successful retailers
-       - Competitive benchmarks (profit margins, discount strategies, etc.)
-       - Case studies or research on similar issues
-       
-       Focus on: e-commerce, retail, superstore, furniture/office supplies sectors
-    
-    4. PROVIDE ACTIONABLE RECOMMENDATIONS
-       Based on data analysis + benchmarks, suggest 5-10 specific actions:
-       - What to do (specific action)
-       - Why (expected impact with numbers if possible)
-       - How (implementation approach)
-       - Priority (High/Medium/Low based on impact and feasibility)
-       
-       Categories:
-       - Product/Category optimization
-       - Pricing and discount strategy
-       - Regional/geographic focus
-       - Operational improvements
-       - Customer segmentation
-    
-    5. PREPARE OUTPUT FOR VISUALIZATION TEAM
-       Identify 3-5 key issues that NEED visualization:
-       - What needs to be visualized
-       - Why visualization will help
-       - What type of chart/analysis would be most effective
-       - What insights we're trying to communicate
-    
-    CRITICAL RULES:
-    - Choose questions with MAXIMUM business impact
-    - Be specific in recommendations (not "improve X" but "do Y to improve X")
-    - Back everything with data and/or benchmarks
-    - Focus on actionable items, not theoretical advice
-    - Prioritize by impact and feasibility
-  
-  expected_output: >
-    Markdown report 'action_recommendations.md' with:
-    
-    ## 1. Executive Summary
-    - Questions selected and why
-    - Key findings summary
-    - Top 3 recommendations (one-sentence each)
-    
-    ## 2. Research Questions Analysis
-    
-    ### Question 1: [Title]
-    **Why this question matters:**
-    - Business impact: [revenue/profit/efficiency impact]
-    - Strategic importance: [why critical]
-    
-    **Data Analysis:**
-    - Findings from the dataset (with specific numbers)
-    - Patterns discovered
-    - Root causes identified
-    
-    **Benchmark Research:**
-    - Industry standards
-    - Best practices
-    - Competitive comparison
-    
-    [Repeat for 2-3 questions total]
-    
-    ## 3. Actionable Recommendations
-    
-    ### High Priority
-    #### Recommendation 1: [Specific Action]
-    - **What:** [Detailed description]
-    - **Why:** [Expected impact - be specific with numbers]
-    - **How:** [Implementation steps]
-    - **Timeline:** [Suggested timeframe]
-    - **Resources needed:** [What's required]
-    
-    [Continue with 5-10 total recommendations across High/Medium/Low priority]
-    
-    ## 4. Implementation Roadmap
-    - Quick wins (0-3 months)
-    - Medium-term initiatives (3-6 months)
-    - Long-term strategies (6-12 months)
-    
-    ---
-    
-    ## 5. OUTPUT FOR VISUALIZATION TEAM
-    
-    ### Key Insights to Communicate
-    1. [Insight from Agent 2]
-    2. [Insight from Agent 2]
-    3. [Insight from Agent 2]
-    
-    ### Issues Requiring Visualization
-    
-    #### Issue 1: [Title]
-    **Problem:** [Description of the issue]
-    **Why visualization needed:** [What we need to show/prove]
-    **Suggested visualizations:**
-    - Chart type 1: [e.g., Bar chart comparing categories]
-    - Chart type 2: [e.g., Time series showing trend]
-    **Data required:** [Which variables to use]
-    **Key message:** [What should the audience understand]
-    
-    #### Issue 2: [Title]
-    [Same structure]
-    
-    #### Issue 3: [Title]
-    [Same structure]
-    
-    [Total: 3-5 issues for visualization]
-  
-  agent: action_advisor
+    description: >
+      Read the following inputs:
+      - 'data_analysis_findings.md' – descriptive facts and research questions
+      - 'business_insights.md' – interpretation and implications
 
-  context:
-    - analyze_data_task       
-    - generate_insights_task
+      Your mission is to translate insights into business action.
 
-  
+      Steps:
+      1. Select 2–3 research questions from Agent 1 that:
+         - Have measurable business impact (revenue, cost, efficiency)
+         - Are answerable with the available data
+         - Address strategic or operational challenges
+
+      2. Answer those questions using:
+         - Data analysis from the dataset
+         - Key insights from Agent 2
+         - External benchmarks using SerperDevTool
+
+      3. Provide specific, actionable recommendations:
+         - Use clear, unambiguous language
+         - Include expected impact (numeric if possible)
+         - Suggest implementation steps
+         - Assign priority (High / Medium / Low)
+
+      4. Identify 3–5 issues that should be visualized:
+         - What to visualize, and why it will help
+         - Type of chart or analysis
+         - Business message to communicate
+
+      Write as if preparing slides for business leadership: be clear, measurable, and strategic.
+
+    expected_output: >
+      Markdown report 'action_recommendations.md' with:
+
+      ## 1. Executive Summary
+      - Questions selected and why
+      - Key findings summary
+      - Top 3 recommendations
+
+      ## 2. Research Questions Analysis
+      ### Question 1: [Title]
+      **Why this question matters:**
+      - Business impact: [revenue/profit/efficiency]
+      - Strategic importance: [decision relevance]
+
+      **Data Analysis:**
+      - Specific numbers from the dataset
+      - Patterns or anomalies discovered
+
+      **Benchmark Research:**
+      - Industry best practices and figures
+      - Relevant comparisons or case studies
+
+      [Repeat for up to 3 questions]
+
+      ## 3. Actionable Recommendations
+      ### High Priority
+      #### Recommendation 1: [Specific Action]
+      - **What:** [Action]
+      - **Why:** [Expected business impact]
+      - **How:** [How to implement]
+      - **Timeline:** [Suggested timeframe]
+      - **Resources needed:** [Tools/teams/data]
+
+      [Repeat for 5–10 total recommendations across priorities]
+
+      ## 4. Implementation Roadmap
+      - Quick Wins (0–3 months)
+      - Medium-Term (3–6 months)
+      - Long-Term (6–12 months)
+
+      ## 5. OUTPUT FOR VISUALIZATION TEAM
+      ### Key Insights to Communicate
+      1. [From Agent 2]
+      2. [From Agent 2]
+      3. [From Agent 2]
+
+      ### Issues Requiring Visualization
+      #### Issue 1: [Title]
+      - **Problem:** [Business context]
+      - **Why Visualization:** [What needs to be clarified]
+      - **Suggested Charts:** [Bar, Line, Heatmap, etc.]
+      - **Data Needed:** [Variables]
+      - **Key Message:** [Conclusion to draw]
+
+    agent: action_advisor
+    context:
+      - analyze_data_task
+      - generate_insights_task

@@ -3,15 +3,22 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai_tools import FileReadTool, CSVSearchTool, CodeInterpreterTool
 from dotenv import load_dotenv
+from pathlib import Path
 
 from typing import List
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Initialize tools
+# Get workspace root path (where data_cleaned.csv is located)
+# visualizetion_crew.py is at: the_super_crew/src/the_super_crew/crews/visualization_crew/visualizetion_crew.py
+# Going up 6 levels gets us to workspace root
+workspace_root = Path(__file__).parent.parent.parent.parent.parent.parent
+csv_file_path = workspace_root / "data_cleaned.csv"
+
+# Initialize tools (lazy initialization for CSVSearchTool to avoid API calls at import time)
 file_read_tool = FileReadTool()
-csv_search_tool = CSVSearchTool()
+# CSVSearchTool is initialized lazily in the agent method to avoid API calls during import
 code_interpreter_tool = CodeInterpreterTool()
 
 # If you want to run a snippet of code before or after the crew starts,
@@ -37,10 +44,13 @@ class VisualizationCrew:
     def viz_planner(self) -> Agent:
         return Agent(
             config=self.agents_config["viz_planner"],  # type: ignore[index]
+            tools=[file_read_tool],  # Add FileReadTool to read action_recommendations.md and business_insights.md
         )
 
     @agent
     def viz_code_generator(self) -> Agent:
+        # Initialize CSVSearchTool lazily to avoid API calls at import time
+        csv_search_tool = CSVSearchTool(csv=str(csv_file_path))
         return Agent(
             config=self.agents_config["viz_code_generator"],  # type: ignore[index]
             tools=[file_read_tool, csv_search_tool],  # Add tools for code generator
